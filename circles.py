@@ -41,22 +41,22 @@ model = Sequential([
     Activation('sigmoid'),
     Dense(10),
     Activation('sigmoid'),
-    Dense(2),
+    Dense(4),
     Activation('softmax')])
 
 # Compile the model with an optimiser
 sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(optimizer=sgd, loss='binary_crossentropy')
 
-radii = [1, 2]
+radii = [1, 2, 3, 4]
 numPoints = 100
-maxPerterbutation = 0.5
+maxPerterbutation = 0.1
 
 X, Y = generate_circle_data(radii, numPoints, maxPerterbutation)
 
 # Create a map of points to plot the function stored in the neural network
-bottomLeft = [-3, -3]
-topRight = [3, 3]
+bottomLeft = [-5, -5]
+topRight = [5, 5]
 
 # Create a plot to visualise the progress of training
 epochList = [1, 10, 20, 50, 100, 200, 300, 400, 500]

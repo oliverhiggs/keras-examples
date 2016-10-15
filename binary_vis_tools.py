@@ -1,12 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# TODO: Convert this into n-classification visualisation??
 
 def progress_plot(model, xTrn, yTrn, bottomLeft, topRight, epochList,
-                  batchSize, numPoints=101, alpha=0.1, verbose=False):
+                  batchSize, numPoints=101, alpha=0.1, verbose=False,
+                  classColours=['r', 'b', 'g', 'c', 'm', 'y', 'k']):
     ''' A function to plot the progress of training a neural network for a
     binary classification problem'''
+    # Find the number of classes and determine whether colour mixing should be
+    # used
+    if len(yTrn[0]) > 3:
+        print("Warning: colour mixing is not used with more than 3 classes")
+        colourMixing = False
+    else:
+        colourMixing = True
 
     X = [[x1, x2] for x1 in np.linspace(bottomLeft[0], topRight[0], numPoints)
          for x2 in np.linspace(bottomLeft[1], topRight[1], numPoints)]
@@ -35,14 +42,22 @@ def progress_plot(model, xTrn, yTrn, bottomLeft, topRight, epochList,
                                                          format(epochList[i]))
 
         # Train the network
-        model.fit(xTrn, yTrn, batch_size=batchSize, 
+        model.fit(xTrn, yTrn, batch_size=batchSize,
                   nb_epoch=epochList[i] - trained, verbose=verbose)
         trained = epochList[i]
 
         # Run the trained neural network and colour points on a sliding scale
-        # with blue for 0 and red for 1
+        # with blue for class 1, red for class 2, and green for class 3
         Y = model.predict(X)
-        c = [(Yi[0], 0, Yi[1]) for Yi in Y]
+        if colourMixing:
+            if len(yTrn[0]) == 3:
+                c = [(Yi[0], Yi[2], Yi[1]) for Yi in Y]
+            else:
+                c = [(Yi[0], 0, Yi[1]) for Yi in Y]
+        else:
+            # There are too many classes for colour mixing, colours must be set
+            # so they are distinct
+            c = [classColours[np.argmax(Yi) % len(classColours)] for Yi in Y]
 
         # Plot the output
         Xt = np.transpose(X)
@@ -51,7 +66,7 @@ def progress_plot(model, xTrn, yTrn, bottomLeft, topRight, epochList,
 
         # Add marks at the training points
         for j in range(len(xTrn)):
-            markColour = [yTrn[j][0], 0, yTrn[j][1]]
+            markColour = classColours[np.argmax(yTrn[j]) % len(classColours)]
             axs[int(i / plotWidth), i % plotWidth].scatter(xTrn[j][0],
                                                            xTrn[j][1],
                                                            color=markColour,
