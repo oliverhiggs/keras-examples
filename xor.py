@@ -8,14 +8,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def progress_plot(model, xTrn, yTrn, axisWidth, epochList):
+def progress_plot(model, xTrn, yTrn, bottomLeftCorner, topRightCorner,
+                  epochList, numPoints=101, alpha=0.1):
     ''' A function to plot the progress of training a neural network for a
     binary classification problem'''
 
-    X = [[x1, x2] for x2 in np.linspace(-(axisWidth - 1) / 2,
-                                        1 + (axisWidth - 1) / 2, 201)
-         for x1 in np.linspace(-(axisWidth - 1) / 2,
-                               1 + (axisWidth - 1) / 2, 201)]
+    X = [[x1, x2] for x1 in np.linspace(bottomLeft[0], topRight[0], numPoints)
+         for x2 in np.linspace(bottomLeft[1], topRight[1], numPoints)]
 
     # The figure will have a width equal to ceiling(sqrt(number))
     plotWidth = int(np.sqrt(len(epochList)))
@@ -33,12 +32,10 @@ def progress_plot(model, xTrn, yTrn, axisWidth, epochList):
     trained = 0
 
     for i in range(0, len(epochList)):
-        axs[int(i / plotWidth), i % plotWidth].set_xlim(-(axisWidth - 1) / 2,
-                                                        1 + (axisWidth - 1) /
-                                                        2)
-        axs[int(i / plotWidth), i % plotWidth].set_ylim(-(axisWidth - 1) / 2,
-                                                        1 + (axisWidth - 1) /
-                                                        2)
+        axs[int(i / plotWidth), i % plotWidth].set_xlim(bottomLeft[0],
+                                                        topRight[0])
+        axs[int(i / plotWidth), i % plotWidth].set_ylim(bottomLeft[1],
+                                                        topRight[1])
         axs[int(i / plotWidth), i % plotWidth].set_title("{0:d} Epochs".
                                                          format(epochList[i]))
 
@@ -54,18 +51,17 @@ def progress_plot(model, xTrn, yTrn, axisWidth, epochList):
 
         # Plot the output
         Xt = np.transpose(X)
-        axs[int(i / plotWidth), i % plotWidth].scatter(Xt[0], Xt[1], color=c)
+        axs[int(i / plotWidth), i % plotWidth].scatter(Xt[0], Xt[1], color=c,
+                                                       alpha=alpha)
 
         # Add marks at the training points
         for j in range(len(xTrn)):
-            if yTrn[j][0] == 1:
-                markColour = 'k'
-            else:
-                markColour = 'w'
+            markColour = [yTrn[j][0], 0, yTrn[j][1]]
             axs[int(i / plotWidth), i % plotWidth].scatter(xTrn[j][0],
                                                            xTrn[j][1],
                                                            color=markColour,
-                                                           marker='o', s=50)
+                                                           marker='o',
+                                                           s=50)
 
     # Remove all the unused axes
     for i in range(len(epochList), plotWidth * plotHeight):
@@ -94,9 +90,10 @@ x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
 y = np.array([[1, 0], [0, 1], [0, 1], [1, 0]])
 
 # Create a map of points to plot the function stored in the neural network
-axisWidth = 3
+bottomLeft = [-0.5, -0.5]
+topRight = [1.5, 1.5]
 
 # Create a plot to visualise the progress of training
 epochList = [100, 200, 300, 800, 900, 1000]
 
-progress_plot(model, x, y, axisWidth, epochList)
+progress_plot(model, x, y, bottomLeft, topRight, epochList)
