@@ -88,7 +88,7 @@ model = Sequential([
 # Compile the model with an optimiser
 sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(optimizer=sgd, loss='binary_crossentropy')
-#testestst
+
 # Create training cases for an XOR function
 x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
 y = np.array([[1, 0], [0, 1], [0, 1], [1, 0]])
@@ -97,6 +97,6 @@ y = np.array([[1, 0], [0, 1], [0, 1], [1, 0]])
 axisWidth = 3
 
 # Create a plot to visualise the progress of training
-epochList = [100, 200, 300, 800, 1000]
+epochList = [100, 200, 300, 800, 900, 1000]
 
 progress_plot(model, x, y, axisWidth, epochList)
