@@ -97,6 +97,6 @@ y = np.array([[1, 0], [0, 1], [0, 1], [1, 0]])
 axisWidth = 3
 
 # Create a plot to visualise the progress of training
-epochList = [100, 200, 300, 400, 500, 600, 700, 800, 1000, 2000, 5000, 10000]
+epochList = [100, 200, 300, 800, 1000]
 
 progress_plot(model, x, y, axisWidth, epochList)
