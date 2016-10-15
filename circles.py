@@ -4,7 +4,7 @@ from keras.layers import Merge
 from keras.optimizers import SGD
 from keras.utils.visualize_util import plot
 
-from binary_vis_tools import progress_plot
+from vis_tools import progress_plot
 
 import numpy as np
 
