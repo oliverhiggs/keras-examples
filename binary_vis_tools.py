@@ -1,9 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# TODO: Convert this into n-classification visualisation??
 
 def progress_plot(model, xTrn, yTrn, bottomLeft, topRight, epochList,
-                  numPoints=101, alpha=0.1):
+                  batchSize, numPoints=101, alpha=0.1, verbose=False):
     ''' A function to plot the progress of training a neural network for a
     binary classification problem'''
 
@@ -34,8 +35,8 @@ def progress_plot(model, xTrn, yTrn, bottomLeft, topRight, epochList,
                                                          format(epochList[i]))
 
         # Train the network
-        model.fit(xTrn, yTrn, batch_size=4, nb_epoch=epochList[i] - trained,
-                  verbose=0)
+        model.fit(xTrn, yTrn, batch_size=batchSize, 
+                  nb_epoch=epochList[i] - trained, verbose=verbose)
         trained = epochList[i]
 
         # Run the trained neural network and colour points on a sliding scale
