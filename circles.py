@@ -34,9 +34,9 @@ def generate_circle_data(radii, numPoints, maxPerterbutation):
     return (np.array(X), np.array(Y))
 
 
-radii = [1, 1.5, 2, 2.5, 3, 3.5]
+radii = [1, 2, 3]
 numPoints = 200
-maxPerterbutation = 0.7
+maxPerterbutation = 0.5
 
 # Create the neural network model
 model = Sequential([
@@ -62,4 +62,4 @@ epochList = [1, 10, 20, 50, 100, 300, 400, 500, 2000]
 batchSize = 10
 
 progress_plot(model, X, Y, bottomLeft, topRight, epochList, batchSize,
-              verbose=False)
+              verbose=True)

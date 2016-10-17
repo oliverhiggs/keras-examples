@@ -80,5 +80,4 @@ def progress_plot(model, xTrn, yTrn, bottomLeft, topRight, epochList,
     fig.set_size_inches(min(5 * plotWidth, 20),
                         min(5 * plotHeight, 20),
                         forward=True)
-    model.predict(xTrn)
     plt.show()
