@@ -15,7 +15,7 @@ def convert_to_one_of_k(Y, k):
 
     k is the number of categories used in classification.
 
-    i.e. [0, 2, 1] becomes [[1,0,0], [0,0,2], [0,1,0]]
+    i.e. [0, 2, 1] becomes [[1,0,0], [0,0,1], [0,1,0]]
     '''
     out = []
     for sample in Y:
