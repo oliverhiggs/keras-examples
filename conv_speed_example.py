@@ -52,8 +52,8 @@ yCatTst = convert_to_one_of_k(yTst, 10)
 model1D = Sequential([
     Convolution1D(64, 4, input_shape=(784, 1), activation='sigmoid'),
     MaxPooling1D(pool_length=4),
-    Convolution1D(10, 4, activation='sigmoid'),
-    MaxPooling1D(pool_length=9),
+    # Convolution1D(10, 4, activation='sigmoid'),
+    # MaxPooling1D(pool_length=9),
     Flatten(),
     Dense(10, activation='softmax')])
 
@@ -61,8 +61,8 @@ model1D = Sequential([
 model2D = Sequential([
     Convolution2D(64, 4, 1, input_shape=(784, 1, 1), activation='sigmoid'),
     MaxPooling2D(pool_size=(4, 1)),
-    Convolution2D(10, 4, 1, activation='sigmoid'),
-    MaxPooling2D(pool_size=(9, 1)),
+    # Convolution2D(10, 4, 1, activation='sigmoid'),
+    # MaxPooling2D(pool_size=(9, 1)),
     Flatten(),
     Dense(10, activation='softmax')])
 
@@ -106,7 +106,7 @@ print("""\nBefore
 
 # Fit the model
 print("Fitting 1D Model...")
-model1D.fit(xFlatTrn, yCatTrn, nb_epoch=1, batch_size=32)
+# model1D.fit(xFlatTrn, yCatTrn, nb_epoch=1, batch_size=32)
 print("Fitting 2D Model...")
 model2D.fit(np.expand_dims(xFlatTrn, -1), yCatTrn, nb_epoch=1, batch_size=32)
 
