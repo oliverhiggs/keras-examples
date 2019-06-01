@@ -4,7 +4,7 @@ from keras.layers import Merge
 from keras.optimizers import SGD
 from keras.utils.visualize_util import plot
 
-from binary_vis_tools import progress_plot
+from vis_tools import progress_plot
 
 import numpy as np
 
@@ -28,6 +28,7 @@ bottomLeft = [-0.5, -0.5]
 topRight = [1.5, 1.5]
 
 # Create a plot to visualise the progress of training
-epochList = [100, 200, 300, 800, 900, 1000]
+epochList = [100, 200, 300, 400, 500, 1000]
+batchsize = 4
 
-progress_plot(model, x, y, bottomLeft, topRight, epochList)
+progress_plot(model, x, y, bottomLeft, topRight, epochList, batchsize)

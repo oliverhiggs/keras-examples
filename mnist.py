@@ -25,70 +25,44 @@ def convert_to_one_of_k(Y, k):
     return np.array(out)
 
 
-(xTrn, yTrn), (xTst, yTst) = mnist.load_data()
+np.random.seed(1337)
 
-# np.expand_dims is required to introduce the 'channel' axis, which is used in
-# Convolutional models
-xFlatTrn = np.array([np.expand_dims(sample.flatten(), -1) for sample in xTrn])
-xFlatTst = np.array([np.expand_dims(sample.flatten(), -1) for sample in xTst])
+(xTrn, yTrn), (xTst, yTst) = mnist.load_data()
 
 yCatTrn = convert_to_one_of_k(yTrn, 10)
 yCatTst = convert_to_one_of_k(yTst, 10)
 
+xTrn = xTrn.astype('float32')
+xTst = xTst.astype('float32')
+
+xTrn /= 255
+xTst /= 255
+
 # Create the model
-# # 2D Convolutional Model
-# model2D = Sequential([
-#     Convolution2D(64, 2, 2, input_shape=(28, 28, 1), activation='sigmoid'),
-#     # SpatialDropout2D(0.5),
-#     MaxPooling2D(pool_size=(2, 2)),
-#     # Convolution2D(10, 2, 2, activation='sigmoid'),
-#     # # SpatialDropout2D(0.5),
-#     # MaxPooling2D(pool_size=(3, 3)),
-#     Flatten(),
-#     Dense(10, activation='softmax')])
-
-
-# 1D Convolutional Model
-model1D = Sequential([
-    Convolution1D(64, 4, input_shape=(784, 1), activation='sigmoid'),
-    MaxPooling1D(pool_length=4),
-    Convolution1D(10, 4, activation='sigmoid'),
-    MaxPooling1D(pool_length=9),
-    Flatten(),
-    Dense(10, activation='softmax')])
-
-# 2D Convolutional Model emulating 1D Model
+# 2D Convolutional Model
 model2D = Sequential([
-    Convolution2D(64, 4, 1, input_shape=(784, 1, 1), activation='sigmoid'),
-    MaxPooling2D(pool_size=(4, 1)),
-    Convolution2D(10, 4, 1, activation='sigmoid'),
-    MaxPooling2D(pool_size=(9, 1)),
+    Convolution2D(32, 3, 3, input_shape=(28, 28, 1), activation='relu'),
+    # SpatialDropout2D(0.8),
+    Convolution2D(32, 3, 3, activation='relu'),
+    # SpatialDropout2D(0.5),
+    MaxPooling2D(pool_size=(2, 2)),
+    Dropout(0.25),
     Flatten(),
+    Dense(128, activation='relu'),
+    Dropout(0.5),
     Dense(10, activation='softmax')])
 
 sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
 
-model1D.compile(optimizer=sgd, loss='binary_crossentropy')
-model2D.compile(optimizer=sgd, loss='binary_crossentropy')
+model2D.compile(optimizer='adadelta', loss='categorical_crossentropy')
 
 # Test the model on the test data before and after fitting
-correct1D = 0
-incorrect1D = 0
-
 correct2D = 0
 incorrect2D = 0
 
-# Make predictions for both 2D Convolutional model and 1D Convolutional model
-print("Running 1D Predictions...")
-predictions1D = model1D.predict(xFlatTst)
-print("Running 2D Predictions...")
-predictions2D = model2D.predict(np.expand_dims(xFlatTst, -1))
-
-for i, prediction in enumerate(predictions1D):
-    if np.argmax(prediction) == np.argmax(yCatTst[i]):
-        correct1D += 1
-    else:
-        incorrect1D += 1
+# Make predictions for the 2D Convolutional model
+print("Running Predictions...")
+predictions2D = model2D.predict(np.expand_dims(xTst, -1))
 
 for i, prediction in enumerate(predictions2D):
     if np.argmax(prediction) == np.argmax(yCatTst[i]):
@@ -97,35 +71,23 @@ for i, prediction in enumerate(predictions2D):
         incorrect2D += 1
 
 print("""\nBefore
-1D Correct: {0}\t\t2D Correct: {1}
-1D Incorrect: {2}\t\t2D Incorrect: {3}
-1D Percent Correct: {4}%\t2D Percent Correct: {5}%\n""".
-      format(correct1D, correct2D, incorrect1D, incorrect2D,
-             100 * correct1D / (correct1D + incorrect1D),
+Correct: {0}\t\tIncorrect: {1}
+Percent Correct: {2}%\n""".
+      format(correct2D, incorrect2D,
              100 * correct2D / (correct2D + incorrect2D)))
 
 # Fit the model
-print("Fitting 1D Model...")
-model1D.fit(xFlatTrn, yCatTrn, nb_epoch=1, batch_size=32)
 print("Fitting 2D Model...")
-model2D.fit(np.expand_dims(xFlatTrn, -1), yCatTrn, nb_epoch=1, batch_size=32)
+model2D.fit(np.expand_dims(xTrn, -1), yCatTrn, nb_epoch=12, batch_size=128)
 
 correct1D = 0
 incorrect1D = 0
 correct2D = 0
 incorrect2D = 0
 
-# Make predictions for both 2D Convolutional model and 1D Convolutional model
-print("Running 1D Predictions...")
-predictions1D = model1D.predict(xFlatTst)
-print("Running 2D Predictions...")
-predictions2D = model2D.predict(np.expand_dims(xFlatTst, -1))
-
-for i, prediction in enumerate(predictions1D):
-    if np.argmax(prediction) == np.argmax(yCatTst[i]):
-        correct1D += 1
-    else:
-        incorrect1D += 1
+# Make predictions for the 2D Convolutional model
+print("Running Predictions...")
+predictions2D = model2D.predict(np.expand_dims(xTst, -1))
 
 for i, prediction in enumerate(predictions2D):
     if np.argmax(prediction) == np.argmax(yCatTst[i]):
@@ -134,9 +96,7 @@ for i, prediction in enumerate(predictions2D):
         incorrect2D += 1
 
 print("""\nAfter
-1D Correct: {0}\t\t2D Correct: {1}
-1D Incorrect: {2}\t\t2D Incorrect: {3}
-1D Percent Correct: {4}%\t2D Percent Correct: {5}%\n""".
-      format(correct1D, correct2D, incorrect1D, incorrect2D,
-             100 * correct1D / (correct1D + incorrect1D),
+Correct: {0}\t\tIncorrect: {1}
+Percent Correct: {2}%\n""".
+      format(correct2D, incorrect2D,
              100 * correct2D / (correct2D + incorrect2D)))

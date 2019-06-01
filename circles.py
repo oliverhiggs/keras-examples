@@ -58,7 +58,7 @@ bottomLeft = [-(max(radii) + 1), -(max(radii) + 1)]
 topRight = [max(radii) + 1, max(radii) + 1]
 
 # Create a plot to visualise the progress of training
-epochList = [1, 10, 20, 50, 100, 300, 400, 500, 2000]
+epochList = [10, 20, 30, 40, 50, 70, 100, 200, 500]
 batchSize = 10
 
 progress_plot(model, X, Y, bottomLeft, topRight, epochList, batchSize,
